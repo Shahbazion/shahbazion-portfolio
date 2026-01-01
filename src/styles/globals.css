@@ -1,0 +1,324 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Font imports */
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap');
+
+/* Base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Vazirmatn', 'B Nazanin', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  direction: rtl;
+  background-color: #fefefe;
+  color: #1a1a1a;
+  overflow-x: hidden;
+  line-height: 1.7;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B8860B;
+}
+
+/* Utility classes */
+.persian-text {
+  font-family: 'Vazirmatn', 'B Nazanin', 'Segoe UI', sans-serif;
+}
+
+.english-text {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bg-gradient-gold {
+  background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%);
+}
+
+.bg-gradient-dark {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+}
+
+.shadow-gold {
+  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.25);
+}
+
+.shadow-brick {
+  box-shadow: 0 10px 30px rgba(196, 69, 54, 0.25);
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.float-animation {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Toast notifications */
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: #333;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  z-index: 10000;
+  transition: transform 0.3s ease;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast-success {
+  background: #28a745;
+}
+
+.toast-error {
+  background: #dc3545;
+}
+
+/* Form styles */
+.contact-input {
+  width: 100%;
+  padding: 1rem;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  background: white;
+  color: #1a1a1a;
+  transition: all 0.3s ease;
+  font-family: 'Vazirmatn', sans-serif;
+}
+
+.contact-input:focus {
+  outline: none;
+  border-color: #D4AF37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+}
+
+.contact-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+/* Button styles */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%);
+  color: #0a0a0a;
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: 50px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  font-family: 'Vazirmatn', sans-serif;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 2px solid #D4AF37;
+  color: #D4AF37;
+  padding: 1rem 2.5rem;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn-outline:hover {
+  background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%);
+  color: #0a0a0a;
+}
+
+/* Project card hover effects */
+.project-card {
+  transition: all 0.3s ease;
+  border: 1px solid #e9ecef;
+  border-radius: 16px;
+  overflow: hidden;
+  background: white;
+}
+
+.project-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.project-card:hover::before {
+  transform: scaleX(1);
+}
+
+/* Glass morphism effect */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Skill bar animation */
+.skill-bar {
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.skill-progress {
+  height: 100%;
+  background: linear-gradient(135deg, #D4AF37 0%, #F4D03F 100%);
+  border-radius: 4px;
+  transition: width 1s ease-in-out;
+}
+
+/* Line clamp utilities */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.line-clamp-3 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+/* RTL specific fixes */
+[dir="rtl"] .rotate-180 {
+  transform: rotate(180deg);
+}
+
+/* Focus styles for accessibility */
+a:focus,
+button:focus,
+input:focus,
+textarea:focus {
+  outline: 2px solid #D4AF37;
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .header, .footer, .social-links, .btn {
+    display: none !important;
+  }
+  
+  body {
+    color: black !important;
+    background: white !important;
+  }
+  
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.9em;
+  }
+}
