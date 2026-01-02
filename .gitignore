@@ -1,40 +1,63 @@
-# dependencies
-/node_modules
-/.pnp
+# ==================== #
+# وابستگی‌ها و محیط
+# ==================== #
+node_modules/
+.pnp/
 .pnp.js
 .yarn/install-state.gz
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-Thumbs.db
-desktop.ini
-
-# debug
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/berry*.cjs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# local env files
-.env*.local
 .env
-.env.development.local
-.env.test.local
-.env.production.local
+.env*.local
+.env.production
+.env.development
+.env.test
+.DS_Store
+Thumbs.db
+desktop.ini
 
-# vercel
-.vercel
-
-# typescript
+# ==================== #
+# Build و خروجی
+# ==================== #
+/.next/
+/out/
+/build/
 *.tsbuildinfo
 next-env.d.ts
+
+# ==================== #
+# تست و آنالیز
+# ==================== #
+/coverage/
+.nyc_output/
+*.lcov
+jest-*.js
+/.jest/cache/
+
+# ==================== #
+# Vercel و مستقر سازی
+# ==================== #
+.vercel/
+
+# ==================== #
+# ادیتورها و IDE ها
+# ==================== #
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ==================== #
+# لاگ‌ها و داده‌های موقت
+# ==================== #
+*.log
+logs/
+*.pid
+*.seed
+*.pid.lock
