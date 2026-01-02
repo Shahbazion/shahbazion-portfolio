@@ -1,115 +1,392 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
+import { useTheme } from 'next-themes'
+import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import Image from 'next/image'
-import { Menu, X, Home, FolderKanban, Mail, User } from 'lucide-react'
-import { NAV_ITEMS } from '@/lib/constants'
+import { 
+  Menu, 
+  X, 
+  Home, 
+  FolderKanban, 
+  Mail, 
+  User, 
+  Moon, 
+  Sun,
+  Globe,
+  ChevronDown,
+  Phone,
+  Github,
+  Linkedin,
+  FileText,
+  Sparkles
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { useLanguage } from '@/hooks/use-language'
+
+// Navigation items with icons and translations
+const NAV_ITEMS = [
+  { key: 'home', href: '/', icon: Home },
+  { key: 'about', href: '/about', icon: User },
+  { key: 'projects', href: '/projects', icon: FolderKanban },
+  { key: 'contact', href: '/contact', icon: Mail },
+] as const
+
+// Languages configuration
+const LANGUAGES = [
+  { code: 'fa', name: 'فارسی', dir: 'rtl', flag: '🇮🇷' },
+  { code: 'en', name: 'English', dir: 'ltr', flag: '🇺🇸' },
+  { code: 'fr', name: 'Français', dir: 'ltr', flag: '🇫🇷' },
+  { code: 'ar', name: 'العربية', dir: 'rtl', flag: '🇸🇦' },
+] as const
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  
+  const t = useTranslations('Header')
+  const pathname = usePathname()
+  const { theme, setTheme } = useTheme()
+  const { currentLanguage, changeLanguage } = useLanguage()
+  
   useEffect(() => {
+    setMounted(true)
+    
     const handleScroll = () => {
       setScrolled(window.scrollY > 10)
     }
+    
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
-
+  
+  // Prevent hydration mismatch
+  if (!mounted) return null
+  
+  const currentLang = LANGUAGES.find(lang => lang.code === currentLanguage) || LANGUAGES[0]
+  const isRTL = currentLang.dir === 'rtl'
+  
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+    <motion.header
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+      className={cn(
+        'fixed top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-md',
         scrolled
-          ? 'bg-white/90 backdrop-blur-md shadow-lg'
-          : 'bg-transparent'
-      }`}
+          ? 'bg-white/90 dark:bg-neutral-900/90 shadow-lg shadow-black/5'
+          : 'bg-transparent',
+        isRTL ? 'font-persian' : 'font-english'
+      )}
     >
-      <nav className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 space-x-reverse">
-            <div className="relative w-12 h-12">
+      <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-20">
+          
+          {/* Logo & Brand */}
+          <Link 
+            href="/" 
+            className="flex items-center space-x-3 group"
+            style={{ direction: isRTL ? 'rtl' : 'ltr' }}
+          >
+            <motion.div 
+              whileHover={{ rotate: 15 }}
+              className="relative w-12 h-12"
+            >
               <Image
                 src="/images/logo.png"
-                alt="لوگو سعید علی شهبازی"
+                alt={t('logoAlt')}
                 fill
-                className="object-contain"
+                className="object-contain drop-shadow-lg"
                 priority
+                sizes="48px"
               />
-            </div>
-            <div className="hidden md:block">
-              <span className="text-xl font-bold text-gray-800">
-                سعید شهبازی
-              </span>
-              <span className="block text-sm text-gold-600">
-                Full Stack Developer
-              </span>
+            </motion.div>
+            
+            <div className="hidden sm:block">
+              <motion.h1 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-xl font-bold bg-gradient-to-r from-primary-gold to-primary-gold-light bg-clip-text text-transparent"
+              >
+                {t('brandName')}
+              </motion.h1>
+              <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                {t('brandTitle')}
+              </p>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6 space-x-reverse">
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-gray-700 hover:text-gold-600 transition-colors font-medium"
+          <div className="hidden lg:flex items-center space-x-8">
+            {/* Main Navigation */}
+            <div className="flex items-center space-x-1">
+              {NAV_ITEMS.map((item) => {
+                const isActive = pathname === item.href
+                const Icon = item.icon
+                
+                return (
+                  <Link
+                    key={item.key}
+                    href={item.href}
+                    className={cn(
+                      'group relative px-4 py-2 rounded-lg transition-all duration-300',
+                      isActive
+                        ? 'text-primary-gold font-semibold'
+                        : 'text-neutral-700 dark:text-neutral-300 hover:text-primary-gold'
+                    )}
+                  >
+                    <span className="flex items-center space-x-2">
+                      <Icon className="w-4 h-4" />
+                      <span>{t(`nav.${item.key}`)}</span>
+                    </span>
+                    
+                    {isActive && (
+                      <motion.div
+                        layoutId="active-nav"
+                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-primary-gold to-primary-gold-light rounded-full"
+                      />
+                    )}
+                  </Link>
+                )
+              })}
+            </div>
+
+            {/* Language Selector */}
+            <div className="relative">
+              <button
+                onClick={() => setIsLanguageOpen(!isLanguageOpen)}
+                className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-white/50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 hover:border-primary-gold transition-colors"
               >
-                {item.label}
-              </Link>
-            ))}
-            <a
-              href="https://wa.me/989302809250"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full font-medium flex items-center space-x-2 space-x-reverse transition-all shadow-lg hover:shadow-xl"
+                <Globe className="w-4 h-4" />
+                <span className="font-medium">{currentLang.flag} {currentLang.name}</span>
+                <ChevronDown className={cn(
+                  'w-4 h-4 transition-transform',
+                  isLanguageOpen && 'rotate-180'
+                )} />
+              </button>
+
+              <AnimatePresence>
+                {isLanguageOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute top-full right-0 mt-2 w-48 rounded-xl bg-white dark:bg-neutral-800 shadow-2xl border border-neutral-200 dark:border-neutral-700 overflow-hidden"
+                  >
+                    {LANGUAGES.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => {
+                          changeLanguage(lang.code)
+                          setIsLanguageOpen(false)
+                        }}
+                        className={cn(
+                          'w-full px-4 py-3 text-left hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors flex items-center space-x-3',
+                          currentLanguage === lang.code && 'bg-primary-gold/10 text-primary-gold'
+                        )}
+                        style={{ direction: lang.dir }}
+                      >
+                        <span className="text-xl">{lang.flag}</span>
+                        <span className="font-medium">{lang.name}</span>
+                        {currentLanguage === lang.code && (
+                          <Sparkles className="w-4 h-4 ml-auto text-primary-gold" />
+                        )}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Theme Toggle */}
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="p-2.5 rounded-lg bg-white/50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 hover:border-primary-gold transition-colors"
+              aria-label={theme === 'dark' ? t('switchToLight') : t('switchToDark')}
             >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.76.982.998-3.675-.236-.374a9.86 9.87 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.9 6.994c-.004 5.45-4.438 9.88-9.888 9.88m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.333.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.333 11.893-11.893 0-3.18-1.24-6.162-3.495-8.411"/>
-              </svg>
-              <span>واتساپ</span>
-            </a>
+              {theme === 'dark' ? (
+                <Sun className="w-5 h-5 text-yellow-400" />
+              ) : (
+                <Moon className="w-5 h-5 text-neutral-600" />
+              )}
+            </button>
+
+            {/* CTA Buttons */}
+            <div className="flex items-center space-x-3">
+              <a
+                href="https://wa.me/989302809250"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-2 px-4 py-2.5 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-all shadow-lg hover:shadow-xl hover:scale-105"
+              >
+                <Phone className="w-4 h-4" />
+                <span>{t('whatsapp')}</span>
+              </a>
+              
+              <a
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center space-x-2 px-4 py-2.5 bg-primary-gold hover:bg-primary-gold-dark text-white rounded-lg font-medium transition-all shadow-lg hover:shadow-xl hover:scale-105"
+              >
+                <FileText className="w-4 h-4" />
+                <span>{t('resume')}</span>
+              </a>
+            </div>
           </div>
 
           {/* Mobile menu button */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100"
-            aria-label="منو"
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          <div className="flex items-center space-x-3 lg:hidden">
+            {/* Theme Toggle Mobile */}
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="p-2 rounded-lg bg-white/50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700"
+              aria-label="Toggle theme"
+            >
+              {theme === 'dark' ? (
+                <Sun className="w-5 h-5 text-yellow-400" />
+              ) : (
+                <Moon className="w-5 h-5 text-neutral-600" />
+              )}
+            </button>
+
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2.5 rounded-lg bg-white/50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700"
+              aria-label={isOpen ? t('closeMenu') : t('openMenu')}
+            >
+              {isOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
-        {isOpen && (
-          <div className="md:hidden mt-4 pb-4 space-y-3">
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="flex items-center space-x-3 space-x-reverse text-gray-700 hover:text-gold-600 p-3 rounded-lg hover:bg-gray-100 transition-all"
-                onClick={() => setIsOpen(false)}
-              >
-                <span className="font-medium">{item.label}</span>
-              </Link>
-            ))}
-            <a
-              href="https://wa.me/989302809250"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center space-x-2 space-x-reverse bg-green-500 hover:bg-green-600 text-white p-3 rounded-lg font-medium transition-all"
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="lg:hidden overflow-hidden"
             >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.76.982.998-3.675-.236-.374a9.86 9.87 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.9 6.994c-.004 5.45-4.438 9.88-9.888 9.88m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.333.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.333 11.893-11.893 0-3.18-1.24-6.162-3.495-8.411"/>
-              </svg>
-              <span>چت در واتساپ</span>
-            </a>
-          </div>
-        )}
+              <div className="py-6 space-y-4 border-t border-neutral-200 dark:border-neutral-700">
+                {/* Navigation Links */}
+                {NAV_ITEMS.map((item) => {
+                  const isActive = pathname === item.href
+                  const Icon = item.icon
+                  
+                  return (
+                    <Link
+                      key={item.key}
+                      href={item.href}
+                      onClick={() => setIsOpen(false)}
+                      className={cn(
+                        'flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors',
+                        isActive
+                          ? 'bg-primary-gold/10 text-primary-gold'
+                          : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                      )}
+                      style={{ direction: isRTL ? 'rtl' : 'ltr' }}
+                    >
+                      <Icon className="w-5 h-5" />
+                      <span className="font-medium">{t(`nav.${item.key}`)}</span>
+                    </Link>
+                  )
+                })}
+
+                {/* Language Selector Mobile */}
+                <div className="px-4 py-3">
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-2">
+                    {t('selectLanguage')}
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {LANGUAGES.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => {
+                          changeLanguage(lang.code)
+                          setIsOpen(false)
+                        }}
+                        className={cn(
+                          'flex items-center justify-center space-x-2 px-3 py-2.5 rounded-lg border transition-colors',
+                          currentLanguage === lang.code
+                            ? 'border-primary-gold bg-primary-gold/10 text-primary-gold'
+                            : 'border-neutral-200 dark:border-neutral-700 hover:border-primary-gold'
+                        )}
+                        style={{ direction: lang.dir }}
+                      >
+                        <span className="text-lg">{lang.flag}</span>
+                        <span className="font-medium">{lang.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Social Links */}
+                <div className="px-4 py-3">
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-3">
+                    {t('connectWithMe')}
+                  </p>
+                  <div className="flex space-x-3">
+                    <a
+                      href="https://github.com/shahbazion"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 flex items-center justify-center space-x-2 px-4 py-2.5 bg-neutral-800 hover:bg-black dark:bg-neutral-700 dark:hover:bg-neutral-600 text-white rounded-lg transition-colors"
+                    >
+                      <Github className="w-4 h-4" />
+                      <span>GitHub</span>
+                    </a>
+                    <a
+                      href="https://linkedin.com/in/shahbazion"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 flex items-center justify-center space-x-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                    >
+                      <Linkedin className="w-4 h-4" />
+                      <span>LinkedIn</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* CTA Buttons Mobile */}
+                <div className="px-4 space-y-3">
+                  <a
+                    href="https://wa.me/989302809250"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center justify-center space-x-2 w-full px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors"
+                  >
+                    <Phone className="w-5 h-5" />
+                    <span>{t('whatsapp')}</span>
+                  </a>
+                  
+                  <a
+                    href="/resume.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center justify-center space-x-2 w-full px-4 py-3 bg-primary-gold hover:bg-primary-gold-dark text-white rounded-lg font-medium transition-colors"
+                  >
+                    <FileText className="w-5 h-5" />
+                    <span>{t('resume')}</span>
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
-    </header>
+    </motion.header>
   )
 }
