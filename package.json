@@ -1,35 +1,60 @@
 {
   "name": "shahbazion-portfolio",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
+  "description": "Portfolio website for Saeid - Ali Shahbazi with 4 language support (Persian, English, French, Arabic)",
+  "author": "Saeid - Ali Shahbazi",
+  "homepage": "https://shahbazion.ir",
+  "license": "MIT",
+  
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "preview": "next start",
+    "analyze": "ANALYZE=true next build"
   },
+  
   "dependencies": {
-    "@vercel/analytics": "^1.0.1",
-    "axios": "^1.6.0",
+    "@vercel/analytics": "^1.7.1",
+    "@vercel/speed-insights": "^1.2.2",
+    "axios": "^1.8.4",
     "clsx": "^2.1.1",
-    "framer-motion": "^10.16.4",
-    "lucide-react": "^0.294.0",
-    "next": "14.0.4",
-    "react": "^18",
-    "react-dom": "^18",
-    "react-hook-form": "^7.48.0",
-    "react-icons": "^4.12.0",
-    "tailwind-merge": "^3.4.0"
+    "framer-motion": "^11.19.6",
+    "i18next": "^24.2.2",
+    "i18next-browser-languagedetector": "^8.0.5",
+    "i18next-http-backend": "^3.0.0",
+    "lucide-react": "^0.478.0",
+    "next": "14.2.31",
+    "next-i18next": "^15.6.0",
+    "next-themes": "^0.4.4",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-hook-form": "^7.54.2",
+    "react-i18next": "^14.1.6",
+    "react-icons": "^5.4.0",
+    "tailwind-merge": "^2.6.0",
+    "usehooks-ts": "^3.1.1"
   },
+  
   "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "autoprefixer": "^10.0.1",
-    "eslint": "^8.57.0",
-    "eslint-config-next": "14.0.4",
-    "postcss": "^8",
-    "tailwindcss": "^3.3.0",
-    "typescript": "^5"
+    "@tailwindcss/typography": "^0.5.16",
+    "@types/node": "22.13.1",
+    "@types/react": "19.0.8",
+    "@types/react-dom": "19.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.26.1",
+    "@typescript-eslint/parser": "^8.26.1",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "14.2.31",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17",
+    "typescript": "5.7.3"
+  },
+  
+  "engines": {
+    "node": ">=18.17.0",
+    "npm": ">=9.0.0"
   }
 }
